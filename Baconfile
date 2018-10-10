@@ -1,0 +1,10 @@
+version: "1.0"
+target:
+  default:
+    watch:
+    - '**/*.go'
+    dir: .
+    command:
+    - make build
+    - mv mockleton $GOPATH/bin/
+    - make test
