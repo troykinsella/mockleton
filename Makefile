@@ -28,4 +28,4 @@ clean:
 	rm ${BINARY}_* || true
 	rm mockleton.out || true
 
-.PHONY: build install test dist clean
+.PHONY: build dev-deps install test dist clean
