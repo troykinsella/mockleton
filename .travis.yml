@@ -11,7 +11,8 @@ script:
 - make test
 
 before_deploy:
-- make dist
+- test "$TRAVIS_PULL_REQUEST" == "false" && test -n "$TRAVIS_TAG" && make dist
+- sha256sum mockleton_* > sha256sum.txt
 
 deploy:
   provider: releases
@@ -20,6 +21,7 @@ deploy:
   file:
   - mockleton_darwin_amd64
   - mockleton_linux_amd64
+  - sha256sum.txt
   skip_cleanup: true
   on:
     repo: troykinsella/mockleton
