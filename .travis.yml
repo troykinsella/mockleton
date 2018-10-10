@@ -26,4 +26,4 @@ deploy:
   on:
     repo: troykinsella/mockleton
     tags: true
-    go: tip
+    go: "1.11"
