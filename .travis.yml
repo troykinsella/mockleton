@@ -2,10 +2,10 @@ sudo: false
 language: go
 
 go:
-- tip
+- "1.11"
 
 before_script:
-- go get github.com/onsi/ginkgo/ginkgo
+- make dev-deps
 
 script:
 - make test

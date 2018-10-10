@@ -9,6 +9,10 @@ LDFLAGS=-ldflags "-X ${PACKAGE}.AppVersion=${VERSION}"
 build:
 	go build ${LDFLAGS} ${COMMAND}
 
+dev-deps:
+	go get github.com/onsi/ginkgo/ginkgo
+	go get github.com/onsi/gomega
+
 install:
 	go install ${LDFLAGS}
 
