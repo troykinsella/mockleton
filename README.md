@@ -13,7 +13,7 @@ Put the binary in a convenient place, such as `/usr/local/bin/mockleton`.
 
 Or, run these commands to download and install:
 ```bash
-VERSION=0.1.0
+VERSION=0.2.0
 OS=darwin # or linux
 curl -SL -o /usr/local/bin/mockleton https://github.com/troykinsella/mockleton/releases/download/v${VERSION}/mockleton_${OS}_amd64
 chmod +x /usr/local/bin/mockleton
@@ -64,6 +64,11 @@ $ cat mockleton.out
 
 If you run `program` again, it will append the new execution details to the `sequence` 
 list in the existing `mockleton.out` file.
+
+This is the basis of how `mockleton` mocks executables. Your scripts or client programs
+can continue to call `program` as they normally would without modifying them to understand
+a testing context.
+
 
 ## Road Map
 

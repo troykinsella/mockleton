@@ -2,7 +2,7 @@ PACKAGE=github.com/troykinsella/mockleton
 BINARY=mockleton
 COMMAND=${PACKAGE}/cmd/${BINARY}
 
-VERSION=0.1.0
+VERSION=0.2.0
 
 LDFLAGS=-ldflags "-X ${PACKAGE}.AppVersion=${VERSION}"
 
