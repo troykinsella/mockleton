@@ -13,7 +13,7 @@ Put the binary in a convenient place, such as `/usr/local/bin/mockleton`.
 
 Or, run these commands to download and install:
 ```bash
-VERSION=0.0.1
+VERSION=0.1.0
 OS=darwin # or linux
 curl -SL -o /usr/local/bin/mockleton https://github.com/troykinsella/mockleton/releases/download/v${VERSION}/mockleton_${OS}_amd64
 chmod +x /usr/local/bin/mockleton

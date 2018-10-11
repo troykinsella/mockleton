@@ -1,1 +1,8 @@
 ---
+sequence:
+- output:
+    exit-code: 123
+    print:
+    - out: foo
+    - err: bar
+    - out: baz

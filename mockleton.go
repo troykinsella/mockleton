@@ -1,16 +1,11 @@
 package mockleton
 
 import (
-	"errors"
+	"fmt"
 	"github.com/troykinsella/mockleton/config"
 	"github.com/troykinsella/mockleton/execution"
 	"github.com/troykinsella/mockleton/report"
-	"io/ioutil"
 	"os"
-)
-
-const (
-	DefaultOutFile = "mockleton.out"
 )
 
 var (
@@ -18,75 +13,75 @@ var (
 )
 
 type Mockleton struct {
+	reportM *report.Manager
+
 	execSpec *execution.Spec
 	mf       *config.Mockletonfile
 }
 
-func New(execSpec *execution.Spec, mf *config.Mockletonfile) *Mockleton {
-	if execSpec == nil {
-		panic(errors.New("execSpec required"))
-	}
-	if mf == nil {
-		mf = &config.Mockletonfile{}
-	}
-
-	return &Mockleton{
-		execSpec: execSpec,
-		mf:       mf,
-	}
+func New() *Mockleton {
+	return &Mockleton{}
 }
 
-func (m *Mockleton) Run() error {
+func (m *Mockleton) Run() (int, error) {
+	var err error
 
-	err := m.writeReport()
+	m.execSpec, err = execution.Capture()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
-}
-
-func (m *Mockleton) loadReport() (*report.R, error) {
-	reportFile := DefaultOutFile
-	reportBytes, err := ioutil.ReadFile(reportFile)
+	m.mf, err = config.LoadMockletonfile()
 	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
-		}
-		return nil, err
+		return 0, err
 	}
 
-	report, err := report.Unmarshal(reportBytes)
+	m.reportM = report.NewManager(m.mf.Report.File, AppVersion)
+
+	r, err := m.reportM.LoadReport()
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
-	return report, nil
-}
-
-func (m *Mockleton) writeReport() error {
-
-	reportFile := DefaultOutFile
-
-	r, err := m.loadReport()
+	activeSeq := len(r.Seq)
+	exitCode, err := m.runSequence(activeSeq)
 	if err != nil {
-		return err
-	}
-	if r == nil {
-		r = report.New(AppVersion)
+		return 0, err
 	}
 
 	r.Add(report.NewExecution(m.execSpec))
 
-	reportBytes, err := report.Marshal(r)
+	err = m.reportM.WriteReport(r)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	err = ioutil.WriteFile(reportFile, reportBytes, 0644)
-	if err != nil {
-		return err
+	return exitCode, nil
+}
+
+func (m *Mockleton) runSequence(i int) (int, error) {
+	if i < len(m.mf.Sequence) {
+		step := m.mf.Sequence[i]
+
+		if step.Output != nil {
+			return m.processOutput(step.Output)
+		}
 	}
 
-	return nil
+	return 0, nil
+}
+
+func (m *Mockleton) processOutput(output *config.Output) (int, error) {
+
+	for _, p := range output.Print {
+		if p["out"] != "" {
+			fmt.Println(p["out"])
+		} else if p["err"] != "" {
+			fmt.Fprintln(os.Stderr, p["err"])
+		} else {
+			return 0, fmt.Errorf("invalid print operation: %v", p)
+		}
+	}
+
+	return output.ExitCode, nil
 }
