@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
-	"github.com/troykinsella/mockleton"
+	"github.com/troykinsella/mockleton/report"
 	"io/ioutil"
 	"os/exec"
 	"path/filepath"
@@ -60,15 +60,15 @@ func FixturePath(fixture string) string {
 
 func LoadReport(path string) map[string]interface{} {
 	if path == "" {
-		path = mockleton.DefaultOutFile
+		path = report.DefaultReportFile
 	}
 
 	data, err := ioutil.ReadFile(path)
 	Expect(err).ToNot(HaveOccurred())
 
-	var report map[string]interface{}
-	err = json.Unmarshal(data, &report)
+	var r map[string]interface{}
+	err = json.Unmarshal(data, &r)
 	Expect(err).ToNot(HaveOccurred())
 
-	return report
+	return r
 }

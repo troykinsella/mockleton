@@ -1,22 +1,14 @@
 package config
 
-import (
-	"encoding/json"
-	"fmt"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"strings"
-)
-
 const (
 	FileName = "Mockletonfile"
 )
 
 type Mockletonfile struct {
 	Vars     map[string]interface{} `yaml:"vars"`
-	Runfile  Runfile                `yaml:"runfile"`
+	Runfile  *Runfile               `yaml:"runfile"`
 	Sequence Sequence               `yaml:"sequence"`
-	Report   Report                 `yaml:"output"`
+	Report   *Report                `yaml:"report"`
 }
 
 type Runfile struct {
@@ -24,86 +16,50 @@ type Runfile struct {
 	Format string
 }
 
-type Sequence struct {
-	Steps []Step
-}
+type Sequence []Step
 
 type Step struct {
 	Label string `yaml:"label"`
 	//Expect Expect `yaml:"expect"`
-	Output Output `yaml:"output"`
+	Output *Output `yaml:"output"`
 }
 
 //type Expect yomega.Spec
 
 type Output struct {
-	ExitCode int `yaml:"exit-code"`
-	Print    []OutputOp
-
+	ExitCode int        `yaml:"exit-code"`
+	Print    []OutputOp `yaml:"print"`
 	// or
-
-	Exec string // path to executable
+	Exec string `yaml:"exec"`
 }
 
-type OutputOp struct {
-	Type    string // out, err
-	Content string
-}
+type OutputOp map[string]string
 
 type Report struct {
 	File   string
 	Format string
 }
 
-func LoadMockletonfile(path string) (*Mockletonfile, error) {
-	var result *Mockletonfile
-	var err error
-
-	content, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	if isJsonFile(path) {
-		result, err = UnmarshalJsonMockletonfile(content)
-	} else if isYamlFile(path) {
-		result, err = UnmarshalYamlMockletonfile(content)
-	} else {
-		err = fmt.Errorf("unsupported Mockelton file format: %s", path)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-
-	return result, err
+func NewMockletonfile() *Mockletonfile {
+	return fillNils(&Mockletonfile{})
 }
 
-func isJsonFile(path string) bool {
-	path = strings.ToLower(path)
-	return strings.HasSuffix(path, "json")
-}
-
-func isYamlFile(path string) bool {
-	path = strings.ToLower(path)
-	return strings.HasSuffix(path, "yaml") ||
-		strings.HasSuffix(path, "yml")
-}
-
-func UnmarshalJsonMockletonfile(content []byte) (*Mockletonfile, error) {
-	var result Mockletonfile
-	err := json.Unmarshal(content, &result)
-	if err != nil {
-		return nil, err
+func fillNils(mf *Mockletonfile) *Mockletonfile {
+	if mf.Sequence == nil {
+		mf.Sequence = make(Sequence, 0)
 	}
-	return &result, nil
-}
 
-func UnmarshalYamlMockletonfile(content []byte) (*Mockletonfile, error) {
-	var result Mockletonfile
-	err := yaml.Unmarshal(content, &result)
-	if err != nil {
-		return nil, err
+	if mf.Report == nil {
+		mf.Report = &Report{}
 	}
-	return &result, nil
+
+	if mf.Runfile == nil {
+		mf.Runfile = &Runfile{}
+	}
+
+	if mf.Vars == nil {
+		mf.Vars = make(map[string]interface{})
+	}
+
+	return mf
 }

@@ -1,5 +1,5 @@
 package report
 
 type Results struct {
-	// Placeholder
+	Status bool `json:"status"`
 }

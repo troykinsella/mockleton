@@ -1,0 +1,14 @@
+---
+sequence:
+- output:
+    exit-code: 11
+    print:
+    - out: foo
+- output:
+    exit-code: 22
+    print:
+    - err: bar
+- output:
+    exit-code: 33
+    print:
+    - out: baz

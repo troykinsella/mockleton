@@ -3,7 +3,7 @@ package integration_test
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/troykinsella/mockleton"
+	"github.com/troykinsella/mockleton/report"
 	"os"
 	"os/exec"
 )
@@ -11,15 +11,14 @@ import (
 var _ = Describe("report", func() {
 
 	AfterEach(func() {
-		os.Remove(mockleton.DefaultOutFile)
+		os.Remove(report.DefaultReportFile)
 	})
 
 	It("should be created", func() {
 		cmd := exec.Command(mockletonPath)
-		//cmd.Dir = FixturePath("basic")
 
 		Run(cmd, 0)
-		Expect(mockleton.DefaultOutFile).To(BeAnExistingFile())
+		Expect(report.DefaultReportFile).To(BeAnExistingFile())
 	})
 
 	It("should have an exec spec sequence", func() {

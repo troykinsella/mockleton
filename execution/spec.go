@@ -1,33 +1,9 @@
 package execution
 
 import (
-	"bytes"
-	"encoding/json"
 	"github.com/troykinsella/mockleton/util"
 	"time"
 )
-
-func Marshal(spec *Spec) ([]byte, error) {
-	var buf bytes.Buffer
-	enc := json.NewEncoder(&buf)
-	enc.SetIndent("", "  ")
-
-	err := enc.Encode(spec)
-	if err != nil {
-		return nil, err
-	}
-
-	return buf.Bytes(), nil
-}
-
-func Unmarshal(data []byte) (*Spec, error) {
-	var s Spec
-	err := json.Unmarshal(data, &s)
-	if err != nil {
-		return nil, err
-	}
-	return &s, nil
-}
 
 // Spec
 
