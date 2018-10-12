@@ -11,12 +11,11 @@ An executable program mocking tool
 Checkout [releases](https://github.com/troykinsella/mockleton/releases) and download the appropriate binary for your system.
 Put the binary in a convenient place, such as `/usr/local/bin/mockleton`.
 
-Or, run these commands to download and install:
+Or, run the handy dandy install script:
+(Note: go read the script and understand what you're running before trusting it)
 ```bash
-VERSION=0.1.0
-OS=darwin # or linux
-curl -SL -o /usr/local/bin/mockleton https://github.com/troykinsella/mockleton/releases/download/v${VERSION}/mockleton_${OS}_amd64
-chmod +x /usr/local/bin/mockleton
+export PREFIX=~ # install into ~/bin
+wget -q -O - https://raw.githubusercontent.com/troykinsella/mockleton/master/install.sh | bash
 ```
 
 ## Usage
